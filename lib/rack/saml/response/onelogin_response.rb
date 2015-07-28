@@ -8,18 +8,15 @@ module Rack
 
       def initialize(request, config, metadata)
         super(request, config, metadata)
-        @response = OneLogin::RubySaml::Response.new(@request.params['SAMLResponse'], {
-          :allowed_clock_drift => config['allowed_clock_drift']
-        })
-        @response.settings = saml_settings
+        @response = OneLogin::RubySaml::Response.new(@request.params['SAMLResponse'], settings: saml_settings)
       end
 
       def is_valid?
         begin
-          if config['validation_error']
-            @response.validate!
+          if @response.is_valid?
+            return true
           else
-            @response.is_valid?
+            raise ValidationError.new( @response.errors.inspect )
           end
         rescue OneLogin::RubySaml::ValidationError => e
           raise ValidationError.new(e.message)

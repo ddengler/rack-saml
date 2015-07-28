@@ -12,9 +12,9 @@ module Rack
         settings.name_identifier_format = "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
         #settings.authn_context = "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"
 
-        if @config['sp_cert'] && @config['sp_key']
-          settings.certificate = ::File.read(@config['sp_cert'])
-          settings.private_key = ::File.read(@config['sp_key'])
+        if @config['certificate'] && @config['private_key']
+          settings.certificate = @config['certificate']
+          settings.private_key = @config['private_key']
 
           settings.security[:authn_requests_signed] = true
           settings.security[:logout_requests_signed] = true
